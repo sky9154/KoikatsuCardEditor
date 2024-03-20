@@ -1,0 +1,10 @@
+{
+  "application": {
+    "name": "戀活角色卡編輯器",
+    "size": {
+      "width": 720,
+      "height": 432
+    },
+    "theme": "dark_teal.xml"
+  }
+}
