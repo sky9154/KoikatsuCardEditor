@@ -6,34 +6,39 @@ def load(image_button):
   file_dialog = QtWidgets.QFileDialog()
   file_dialog.setWindowTitle('選擇卡片')
   file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+  file_dialog.setDirectory(QtCore.QDir.homePath() + '/Downloads')
   file_dialog.setNameFilter('*.png')
 
   if file_dialog.exec():
     files = file_dialog.selectedFiles()
-    file_path = files[0] if files else None
+    card_path = files[0] if files else None
 
-    if file_path:
-      pixmap = QtGui.QPixmap(file_path)
+    if card_path:
+      pixmap = QtGui.QPixmap(card_path)
       scaled_pixmap = pixmap.scaled(252, 352, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
       image_button.setIcon(QtGui.QIcon(scaled_pixmap))
 
-      info(file_path)
+    return card_path
 
-def info(card):
-  kc = KoikatuCharaData.load(card)
+def info(card_path):
+  try:
+    kc = KoikatuCharaData.load(card_path)
+    character = kc['Parameter']
 
-  character = kc['Parameter']
-
-  info = {
-    'version': character['version'],
-    'sex': 'male' if character['sex'] == 0 else 'female',
-    'lastname': character['lastname'],
-    'firstname': character['firstname'],
-    'nickname': character['nickname'],
-    'personality': character['personality'],
-    'bloodType': character['bloodType'],
-    'birthMonth': character['birthMonth'],
-    'birthDay': character['birthDay']
-  }
-
-  return info
+    return {
+      'version': character['version'],
+      'sex': 'male' if character['sex'] == 0 else 'female',
+      'lastname': character['lastname'],
+      'firstname': character['firstname'],
+      'nickname': character['nickname'],
+      'personality': character['personality'],
+      'bloodType': character['bloodType'],
+      'birthMonth': character['birthMonth'],
+      'birthDay': character['birthDay']
+    }
+  except Exception as e:
+    return {
+      'version': '', 'sex': '', 'lastname': '', 'firstname': '',
+      'nickname': '', 'personality': '', 'bloodType': '', 'birthMonth': '',
+      'birthDay': ''
+    }

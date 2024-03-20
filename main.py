@@ -1,8 +1,11 @@
 import sys
 import json
-from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui
 from qt_material import apply_stylesheet
-import functions.card as card
+import components.Button as Button
+import components.Frame as Frame
+import components.Layout as Layout
+import functions.card as Card
 
 
 with open('config.json', 'r') as file:
@@ -17,28 +20,34 @@ class MainWindow(QtWidgets.QMainWindow):
     self.setWindowTitle(application['name'])
     self.setFixedSize(application['size']['width'], application['size']['height'])
 
+    character = Card.info(None)
+
     main_widget = QtWidgets.QWidget()
     self.setCentralWidget(main_widget)
 
-    image = QtGui.QPixmap('images/default.png')
-    scaled_image = image.scaled(252, 352, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+    self.image_button = Button.LoadButton()
+    self.edit_frame = Frame.EditFrame()
+    self.edit_layout = Layout.EditLayout(self.edit_frame, character)
 
-    image_button = QtWidgets.QPushButton()
-    image_button.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-    image_button.setStyleSheet('background-color: transparent;border: 1px solid #FFFFFF')
-    image_button.setIcon(QtGui.QIcon(scaled_image))
-    image_button.setIconSize(QtCore.QSize(252, 352))
-    image_button.clicked.connect(lambda: card.load(image_button))
+    self.image_button.clicked.connect(self.load_image)
 
-    text_label = QtWidgets.QLabel("這裡是文字顯示區域")
-    text_label.setStyleSheet('border: 1px solid #FFFFFF')
-    text_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+    self.main_layout = QtWidgets.QHBoxLayout(main_widget)
+    self.main_layout.setContentsMargins(10, 10, 10, 10)
+    self.main_layout.setSpacing(10)
+    self.main_layout.addWidget(self.image_button, 4)
+    self.main_layout.addWidget(self.edit_frame, 6)
 
-    layout = QtWidgets.QHBoxLayout(main_widget)
-    layout.setContentsMargins(10, 10, 10, 10)
-    layout.setSpacing(10)
-    layout.addWidget(image_button, 4)
-    layout.addWidget(text_label, 6)
+  def load_image(self):
+    card_path = Card.load(self.image_button)
+    character = Card.info(card_path)
+
+    self.main_layout.removeWidget(self.edit_frame)
+    for child in self.edit_frame.findChildren(QtWidgets.QLineEdit):
+      child.clear()
+
+    self.edit_frame = Frame.EditFrame()
+    self.edit_layout = Layout.EditLayout(self.edit_frame, character)
+    self.main_layout.addWidget(self.edit_frame, 6)
 
 if __name__ == '__main__':
   app = QtWidgets.QApplication(sys.argv)
