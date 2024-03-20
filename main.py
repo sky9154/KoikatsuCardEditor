@@ -1,15 +1,15 @@
-import sys
-import json
 from PySide6 import QtWidgets, QtGui
 from qt_material import apply_stylesheet
+import sys
+import json
 import components.Button as Button
 import components.Frame as Frame
 import components.Layout as Layout
 import functions.card as Card
 
 
-with open('config.json', 'r') as file:
-  config = json.load(file)
+with open('assets/data/config.json', 'r') as config_json:
+  config = json.load(config_json)
 
 application = config.get('application')
 
@@ -51,7 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
   app = QtWidgets.QApplication(sys.argv)
-  app_icon = QtGui.QIcon('images/koikatu.ico')
+  app_icon = QtGui.QIcon('assets/images/koikatu.ico')
   app.setWindowIcon(app_icon)
 
   apply_stylesheet(app, theme=application['theme'])

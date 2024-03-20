@@ -5,7 +5,7 @@ class LoadButton(QtWidgets.QPushButton):
   def __init__(self):
     super().__init__()
 
-    image = QtGui.QPixmap('images/default.png')
+    image = QtGui.QPixmap('assets/images/default.png')
     scaled_image = image.scaled(252, 352, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
 
     self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)

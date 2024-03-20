@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets, QtGui, QtCore
 from kkloader import KoikatuCharaData
+import json
 
 
 def load(image_button):
@@ -25,20 +26,24 @@ def info(card_path):
     kc = KoikatuCharaData.load(card_path)
     character = kc['Parameter']
 
+    with open('assets/data/blood.json', 'r') as blood_json:
+      blood = json.load(blood_json)
+
+    with open('assets/data/personality.json', 'r') as personality_json:
+      personality = json.load(personality_json)
+
     return {
-      'version': character['version'],
-      'sex': 'male' if character['sex'] == 0 else 'female',
       'lastname': character['lastname'],
       'firstname': character['firstname'],
       'nickname': character['nickname'],
-      'personality': character['personality'],
-      'bloodType': character['bloodType'],
+      'sex': 'male' if character['sex'] == 0 else 'female',
+      'personality': personality[str(character['personality'])],
+      'bloodType': blood[str(character['bloodType'])],
       'birthMonth': character['birthMonth'],
       'birthDay': character['birthDay']
     }
   except Exception as e:
     return {
-      'version': '', 'sex': '', 'lastname': '', 'firstname': '',
-      'nickname': '', 'personality': '', 'bloodType': '', 'birthMonth': '',
-      'birthDay': ''
+      'lastname': '', 'firstname': '', 'nickname': '', 'sex': '',
+      'personality': '', 'bloodType': '', 'birthMonth': '', 'birthDay': ''
     }
